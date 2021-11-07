@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections;
+using Microsoft.EntityFrameworkCore;
 
 namespace Biblioteca.Models
 {
@@ -22,8 +23,7 @@ namespace Biblioteca.Models
                 Livro livro = bc.Livros.Find(l.Id);
                 livro.Autor = l.Autor;
                 livro.Titulo = l.Titulo;
-                livro.Ano = l.Ano;/* Adicionado o campo Ano */
-
+                livro.Ano = l.Ano; //Adicionado o campo Ano 
                 bc.SaveChanges();
             }
         }
@@ -36,7 +36,7 @@ namespace Biblioteca.Models
                 
                 if(filtro != null)
                 {
-                    //definindo dinamicamente a filtragem
+                    
                     switch(filtro.TipoFiltro)
                     {
                         case "Autor":
@@ -54,16 +54,14 @@ namespace Biblioteca.Models
                 }
                 else
                 {
-                    // caso filtro não tenha sido informado
                     query = bc.Livros;
                 }
                 
-                //ordenação padrão
-                return query.OrderBy(l => l.Titulo).ToList();
+                return query.OrderByDescending(l => l.Titulo).ToList();
             }
         }
 
-        public ICollection<Livro> ListarDisponiveis()
+         public ICollection<Livro> ListarDisponiveis()
         {
             using(BibliotecaContext bc = new BibliotecaContext())
             {
@@ -81,6 +79,13 @@ namespace Biblioteca.Models
             using(BibliotecaContext bc = new BibliotecaContext())
             {
                 return bc.Livros.Find(id);
+            }
+        }
+          public int CountLivros()
+        {
+            using (var context = new BibliotecaContext())
+            {
+                return context.Livros.Count();
             }
         }
     }
